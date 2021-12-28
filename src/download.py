@@ -48,12 +48,8 @@ def download(search):
             continue
         
         # save to disk
-        try:
-            with open(path, 'wb') as f:
-                f.write(txt)
-        except IsADirectoryError:
-            print("Path is a directory: couldn't download PDF from", furl.geturl())
-            return
+        with open(path, 'wb') as f:
+            f.write(txt)
 
 def download_search(keywords='', max_results=5):
     search = Search(keywords=keywords, max_results=max_results)
