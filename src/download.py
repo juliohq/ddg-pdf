@@ -22,29 +22,36 @@ def download(search):
         os.mkdir(DEST_PATH)
     
     for res in results:
+        url = res['href']
+        
         # skip if it's not a PDF file
         if not res in matches:
             for func in skip_nonpdf_hook:
                 func(res)
-            print("Skipping non-PDF file:", res['href'])
+            print("Skipping non-PDF file:", url)
             continue
         
         try:
             # open result url
-            url = res['href']
             http = urllib.request.urlopen(url)
             
             # get final url and set a file path for it
             path = os.path.join(DEST_PATH, os.path.basename(urlparse(http.geturl()).path))
             
             # retrieve file from final url
-            furl = urllib.request.urlopen(http.geturl())
-            print("Final url:", furl.geturl())
-            txt = furl.read()
+            fhttp = urllib.request.urlopen(http.geturl())
+            furl = fhttp.geturl()
+            print("url:", furl)
+            txt = fhttp.read()
+            if not txt[0:4] == b'%PDF':
+                for func in skip_nonpdf_hook:
+                    func(res)
+                print("Skipping non-PDF file:", furl)
+                continue
         except urllib.error.HTTPError as e:
             for func in http_error_hook:
                 func(e)
-            print("HTTP Error:", furl.geturl())
+            print("HTTP Error:", furl)
             continue
         
         # save to disk
