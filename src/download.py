@@ -12,6 +12,7 @@ DEST_PATH = os.path.join(os.getcwd(), 'output')
 create_folder_hook = []
 skip_nonpdf_hook = []
 http_error_hook = []
+url_error_hook = []
 
 def download(search):
     results = search.results
@@ -62,6 +63,11 @@ def download(search):
             for func in http_error_hook:
                 func(e)
             print("HTTP Error:", furl)
+            continue
+        except urllib.error.URLError as e:
+            for func in url_error_hook:
+                func(e)
+            print('URL Error:', furl)
             continue
         
         # save to disk
