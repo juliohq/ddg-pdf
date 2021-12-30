@@ -57,7 +57,8 @@ def download(search):
                 dlhash = get_hash_raw(txt)
                 fhash = get_hash(path)
                 if dlhash == fhash:
-                    print(f'Skipping already downloaded file\n{fhash}')
+                    out = f"\u001b[32mSkipping already downloaded file\n{fhash}\u001b[37m" if color_output else f"Skipping already downloaded file\n{fhash}"
+                    print(out)
                     continue
                 else:
                     print(f'Overwriting file with the same name: {path}')
