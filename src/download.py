@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from src.match import match
 from src.search import Search
+from src.hash import get_hash, get_hash_raw
 
 DEST_PATH = os.path.join(os.getcwd(), 'output')
 
@@ -48,6 +49,15 @@ def download(search):
                     func(res)
                 print("Skipping non-PDF file:", furl)
                 continue
+            # check if file already exists
+            if os.path.isfile(path):
+                dlhash = get_hash_raw(txt)
+                fhash = get_hash(path)
+                if dlhash == fhash:
+                    print(f'Skipping already downloaded file\n{fhash}')
+                    continue
+                else:
+                    print(f'Overwriting file with the same name: {path}')
         except urllib.error.HTTPError as e:
             for func in http_error_hook:
                 func(e)
