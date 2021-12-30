@@ -8,6 +8,8 @@ from src.hash import get_hash, get_hash_raw
 
 DEST_PATH = os.path.join(os.getcwd(), 'output')
 
+color_output = True
+
 # hooks
 create_folder_hook = []
 skip_nonpdf_hook = []
@@ -62,12 +64,14 @@ def download(search):
         except urllib.error.HTTPError as e:
             for func in http_error_hook:
                 func(e)
-            print("HTTP Error:", furl)
+            out = f"\033[0;31mHTTP Error: {furl} \u001b[37m" if color_output else f"HTTP Error: {furl}"
+            print(out)
             continue
         except urllib.error.URLError as e:
             for func in url_error_hook:
                 func(e)
-            print('URL Error:', furl)
+            out = f"\033[0;31mURL Error: {furl} \u001b[37m" if color_output else f"URL Error: {furl}"
+            print(out)
             continue
         
         # save to disk
