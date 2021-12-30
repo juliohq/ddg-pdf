@@ -32,7 +32,8 @@ def download(search):
         if not res in matches:
             for func in skip_nonpdf_hook:
                 func(res)
-            print("Skipping non-PDF file:", url)
+            out = f"\u001b[33mSkipping non-PDF file: {url}\u001b[37m" if color_output else f"Skipping non-PDF file: {url}"
+            print(out)
             continue
         
         try:
@@ -50,7 +51,8 @@ def download(search):
             if not txt[0:4] == b'%PDF':
                 for func in skip_nonpdf_hook:
                     func(res)
-                print("Skipping non-PDF file:", furl)
+                out = f"\u001b[33mSkipping non-PDF file: {furl}\u001b[37m" if color_output else f"Skipping non-PDF file: {furl}"
+                print(out)
                 continue
             # check if file already exists
             if os.path.isfile(path):
