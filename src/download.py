@@ -1,4 +1,5 @@
 import os
+import http
 import urllib.request, urllib.error
 from urllib.parse import urlparse
 
@@ -9,6 +10,7 @@ from src.hash import get_hash, get_hash_raw
 DEST_PATH = os.path.join(os.getcwd(), 'output')
 
 color_output = True
+global_timeout = 10
 
 # hooks
 create_folder_hook = []
@@ -38,13 +40,13 @@ def download(search):
         
         try:
             # open result url
-            http = urllib.request.urlopen(url)
+            http = urllib.request.urlopen(url, timeout=global_timeout/2)
             
             # get final url and set a file path for it
             path = os.path.join(DEST_PATH, os.path.basename(urlparse(http.geturl()).path))
             
             # retrieve file from final url
-            fhttp = urllib.request.urlopen(http.geturl())
+            fhttp = urllib.request.urlopen(http.geturl(), timeout=global_timeout/2)
             furl = fhttp.geturl()
             print("url:", furl)
             txt = fhttp.read()
@@ -75,6 +77,12 @@ def download(search):
                 func(e)
             out = f"\033[0;31mURL Error: {furl} \u001b[37m" if color_output else f"URL Error: {furl}"
             print(out)
+            continue
+        except http.client.IncompleteRead:
+            out = f"\033[0;31mTimeout Error: {furl} \u001b[37m" if color_output else f"Timeout Error: {furl}"
+            print(out)
+            continue
+        else:
             continue
         
         # save to disk
