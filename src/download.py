@@ -1,5 +1,6 @@
 import os
-import http
+from http.client import IncompleteRead
+from socket import timeout
 import urllib.request, urllib.error
 from urllib.parse import urlparse
 
@@ -78,7 +79,7 @@ def download(search):
             out = f"\033[0;31mURL Error: {furl} \u001b[37m" if color_output else f"URL Error: {furl}"
             print(out)
             continue
-        except http.client.IncompleteRead:
+        except IncompleteRead or timeout:
             out = f"\033[0;31mTimeout Error: {furl} \u001b[37m" if color_output else f"Timeout Error: {furl}"
             print(out)
             continue
