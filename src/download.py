@@ -82,8 +82,6 @@ def download(search):
             out = f"\033[0;31mTimeout Error: {furl} \u001b[37m" if color_output else f"Timeout Error: {furl}"
             print(out)
             continue
-        else:
-            continue
         
         # save to disk
         with open(path, 'wb') as f:
